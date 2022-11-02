@@ -1,0 +1,39 @@
+setwd("<path>")
+
+data.va <- read.csv("Results.csv" , header = TRUE)
+
+set.seed(1) #This is to produce the same results everytime it is being re-done.
+
+#Data pre-processing
+View(data.va)
+value.added <- data.va[, -c(1,2,3)]
+plot(value.added)
+
+#PCA
+pca <- prcomp(value.added)
+
+#Scree plot
+plot(pca, type = "l")
+#PCA plot
+pca$x
+summary(pca)
+14
+plot(pca$x[,1:2])
+
+#elbow
+k <- list()
+for(i in 1:10){
+ k[[i]] <- kmeans(pca$x[,1:2], i)
+}
+WSS <- list()
+for(i in 1:10){
+ WSS[[i]] <- k[[i]]$tot.withinss
+}
+plot(1:10, WSS, type = "b",
+ ylab = "WSS", xlab = "Clusters")
+ 
+#K-means on PCA
+pca.kmeans <- kmeans(pca$x[,1:2], 4)
+plot(pca$x[,1:2], col = pca.kmeans$cluster, pch = 19)
+pca.kmeans$cluster #To see how country members are assign
+pca.kmeans$centers #To see the centres of each cluster respect to PC’s
